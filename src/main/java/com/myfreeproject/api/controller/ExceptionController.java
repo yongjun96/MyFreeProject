@@ -24,13 +24,14 @@ public class ExceptionController {
     public ErrorResponse exceptionHandler(MethodArgumentNotValidException e){
         // MethodArgumentNotValidException --> 이 예외가 발생했을 때만 타도록
 
-        //if(e.hasErrors()){
 //            FieldError fieldError = e.getFieldError();
 //            String field = fieldError.getField();
 //            String message = fieldError.getDefaultMessage();
-            return new ErrorResponse("400", "잘못된 요청입니다.");
-       /* } else{
+            ErrorResponse response =  new ErrorResponse("400", "잘못된 요청입니다.");
+            for(FieldError fieldError : e.getFieldErrors()){
+                response.addValidation(fieldError.getField(), fieldError.getDefaultMessage());
+            }
 
-        }*/
+            return response;
     }
 }
