@@ -1,6 +1,8 @@
 package com.myfreeproject.api.controller;
 
 import com.myfreeproject.api.request.PostCreate;
+import com.myfreeproject.api.service.PostService;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
@@ -14,7 +16,10 @@ import java.util.Map;
 
 @Slf4j
 @RestController
+@RequiredArgsConstructor
 public class PostController {
+
+    private final PostService postService;
 
     // SSR -> jsp, thymeleaf, freemarker
     // -> html rendering
@@ -91,6 +96,8 @@ public class PostController {
             error.put(fieldName, errorMessage);
             return error;
         }
+
+        postService.write(params);
         return Map.of();
     }
 
@@ -99,6 +106,19 @@ public class PostController {
     public Map<String, String> post6(@RequestBody @Valid PostCreate params){
         return Map.of();
     }
+
+
+    @PostMapping("/test/post7")
+    public Map<String, String> post7(@RequestBody @Valid PostCreate request){
+        // db.save(params)
+        // 서비스 레이어를 하나만들어서 repository 호출
+
+        postService.write(request);
+        return Map.of();
+    }
+
+
+
 
 
 
