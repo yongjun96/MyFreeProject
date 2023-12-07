@@ -1,7 +1,9 @@
 package com.myfreeproject.api.controller;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.myfreeproject.api.domain.Post;
 import com.myfreeproject.api.repository.PostRepository;
+import com.myfreeproject.api.request.PostCreate;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -43,6 +45,9 @@ class PostControllerTest {
      *              }
      * }
      */
+
+    @Autowired
+    private ObjectMapper objectMapper;
 
     @Autowired
     private MockMvc mockMvc;
@@ -95,7 +100,7 @@ class PostControllerTest {
 
         //content-Type : application/json
 
-        mockMvc.perform(MockMvcRequestBuilders.post("/test/post5")
+        mockMvc.perform(MockMvcRequestBuilders.post("/test/post7")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{\"title\": \"제목입니다\", \"content\": \"내용입니다\"}")
                 )
@@ -149,10 +154,19 @@ class PostControllerTest {
     void testPost5() throws Exception{
         //content-Type : application/json
 
+        // given
+        PostCreate request = PostCreate.builder()
+                .title("제목입니다.")
+                .content("내용입니다.")
+                .build();
+
+        //json형태로 가공 **[ObjectMapper 중요]
+        String json = objectMapper.writeValueAsString(request);
+
         // when
         mockMvc.perform(MockMvcRequestBuilders.post("/test/post7")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content("{\"title\": \"제목입니다.\", \"content\": \"내용입니다.\"}")    // DB에 저장되어야 하는 데이터
+                        .content(json)    // DB에 저장되어야 하는 데이터
                 )
                 //junit5 jsonPath <-- 검색
                 .andExpect(MockMvcResultMatchers.status().isOk())
